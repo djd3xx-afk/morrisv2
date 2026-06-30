@@ -1,86 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Viewer</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #111111;
-            overflow: hidden;
-            font-family: system-ui, sans-serif;
-        }
-        .viewer-container {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-        }
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            background-color: #111111;
-            display: none; /* Hidden until streaming completes */
-        }
-        /* Loading Text Overlay */
-        #status-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ffffff;
-            font-size: 1.2rem;
-            text-align: center;
-            z-index: 10;
-        }
-    </style>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-</head>
-<body>
+<!-- 1. Import the viewer script (put this in your <head> or before </body>) -->
+<script type="module" src="https://googleapis.com"></script>
 
-    <div class="viewer-container">
-        <div id="status-overlay">Initializing 3D Asset Stream...</div>
-
-        <model-viewer 
-            id="viewer"
-            camera-controls 
-            auto-rotate
-            environment-image="neutral"
-            shadow-intensity="1"
-            exposure="1"
-            alt="Interactive 3D Asset">
-        </model-viewer>
-    </div>
-
-    <script>
-        const statusOverlay = document.getElementById('status-overlay');
-        const viewer = document.getElementById('viewer');
-        
-        // Update this string to your exact filename inside the R2 bucket
-        const ASSET_URL = 'https://morris3dface.dannyjordan.uk/your-actual-filename.glb';
-
-        // Stream via fetch to bypass aggressive edge-proxy blocks
-        statusOverlay.innerText = "Downloading 80MB Model File...";
-        
-        fetch(ASSET_URL, { mode: 'cors' })
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP status ${response.status}`);
-                return response.blob();
-            })
-            .then(blob => {
-                statusOverlay.innerText = "Processing Textures...";
-                const blobURL = URL.createObjectURL(blob);
-                viewer.src = blobURL;
-                viewer.style.display = 'block';
-                statusOverlay.style.display = 'none';
-            })
-            .catch(error => {
-                console.error("Fetch Error:", error);
-                statusOverlay.innerHTML = `Loading Failed.<br><span style="font-size:0.9rem; color:#ff6b6b;">${error.message}</span><br><br><small style="color:#888;">Check if Cloudflare Hotlink Protection is blocking requests.</small>`;
-            });
-    </script>
-</body>
-</html>
+<!-- 2. Insert the 3D player into your HTML body -->
+<model-viewer 
+  src="morris3dface.dannyjordan.uk/morrisv2.glb" 
+  ar 
+  camera-controls 
+  touch-action="pan-y" 
+  alt="A 3D model" 
+  style="width: 100%; height: 500px;">
+</model-viewer>
